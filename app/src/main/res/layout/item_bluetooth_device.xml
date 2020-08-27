@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btDeviceLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/ver_margin"
+    android:layout_marginLeft="@dimen/hor_margin"
+    android:background="@android:drawable/editbox_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/btDeviceNameView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:text="BT name" />
+
+    <TextView
+        android:id="@+id/btDeviceAddrView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:text="BT addr" />
+
+    <TextView
+        android:id="@+id/btDeviceUpdateTimeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:text="Update time" />
+
+    <TextView
+        android:id="@+id/btRssiView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        tools:text="Rssi" />"
+
+</LinearLayout>

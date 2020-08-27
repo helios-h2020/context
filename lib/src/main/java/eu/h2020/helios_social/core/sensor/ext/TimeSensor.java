@@ -1,0 +1,46 @@
+package eu.h2020.helios_social.core.sensor.ext;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import eu.h2020.helios_social.core.sensor.Sensor;
+
+/**
+ * This class implements a simple time sensor class.
+ * It extends the abstract base class sensor.
+ * Time is obtained directly from the system, and sensor value listeners
+ * are notified with given time interval about the current time.
+ */
+public class TimeSensor extends Sensor {
+    int timeInterval;
+    ScheduledExecutorService scheduler;
+
+    /**
+     * Creates a new TimeSensor
+     * @param timeInterval the time interval in milliseconds
+     */
+    public TimeSensor(int timeInterval) {
+        this.timeInterval = timeInterval;
+        this.scheduler = null;
+    }
+
+    @Override
+    public void startUpdates() {
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleWithFixedDelay
+                (new Runnable() {
+                    public void run() {
+                        receiveValue(System.currentTimeMillis());
+                    }
+                }, 0, timeInterval, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void stopUpdates() {
+        if(scheduler != null) {
+            // stops the scheduler thread
+            scheduler.shutdownNow();
+        }
+    }
+}

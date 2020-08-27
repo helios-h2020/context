@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference app:title="Name (nickname)"
+        app:key="username"
+        app:summary="Please provide your username"></EditTextPreference>
+
+    <!--
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="Enable message notifications"/>
+    -->
+
+    <Preference
+        app:key="feedback"
+        app:title="Send feedback (TODO)"
+        app:summary="Report technical issues or suggest new features"/>
+    <!--
+    <ListPreference
+        app:key="list"
+        app:title="Profile share"
+        app:entries="@array/profile_share_names"
+        app:entryValues="@array/profile_share_values"
+        app:defaultValue="0"
+        app:summary="Choose profile share options"
+        />
+        -->
+
+    <!-- app:icon="@drawable/ic_palette_purple_36dp"
+     app:dialogIcon="@drawable/ic_palette_green_36dp"-->
+</PreferenceScreen>
