@@ -37,9 +37,8 @@ public abstract class Sensor {
 	 * @param value the value
 	 */
 	public void receiveValue(Object value) {
-		Iterator itr = sensorListeners.iterator();
-		while (itr.hasNext()) {
-			((SensorValueListener) itr.next()).receiveValue(value);
+		for (SensorValueListener sensorListener : sensorListeners) {
+			sensorListener.receiveValue(value);
 		}
 	}
 

@@ -15,8 +15,7 @@ import java.util.List;
  * New context types can be created by extending this class.
  */
 public class Context {
-	private final int type;
-	private final int id; // TODO. Ids in Helios?
+	private final String id;
 	private String name;
 	private boolean active;
 	private final List<ContextAttribute> attributes;
@@ -24,17 +23,25 @@ public class Context {
 
 	/**
 	 * Creates a context
-	 * @param type the type of this context
+	 * @param id the identifier of this context
 	 * @param name the name of this context
 	 * @param active is this context active
 	 */
-	public Context(int type, String name, boolean active) {
-		this.id = 1; // TODO
-		this.type = type;
+	public Context(String id, String name, boolean active) {
+		this.id = id; // TODO: if id == null, generate unique identifier?
 		this.name = name;
 		this.active = active;
 		attributes = new ArrayList<ContextAttribute>();
 		listeners = new ArrayList<ContextListener>();
+	}
+
+	/**
+	 * Creates a context
+	 * @param name the name of this context
+	 * @param active is this context active
+	 */
+	public Context(String name, boolean active) {
+		this(null, name, active);
 	}
 
 	/**
@@ -52,9 +59,8 @@ public class Context {
 	public void setActive(boolean active) {
 		if(active != this.active) {
 			this.active = active;
-			Iterator itr = listeners.iterator();
-			while (itr.hasNext()) {
-				((ContextListener) itr.next()).contextChanged(active);
+			for (ContextListener listener : listeners) {
+				listener.contextChanged(active);
 			}
 		}
 	}
@@ -72,6 +78,12 @@ public class Context {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * Gets identifier of this context
+	 * @return the identifier of this context
+	 */
+	public String getId() { return id; }
 
 	/**
 	 * Adds attribute for the context

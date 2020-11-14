@@ -19,7 +19,6 @@ public class ActivityContext extends Context implements SensorValueListener {
 
     private int activityType;
     private int confidence;
-    private static final int ACTIVITY_CONTEXT_TYPE=3;
     private static final String TAG = "HeliosActivityContext";
 
     /**
@@ -28,7 +27,17 @@ public class ActivityContext extends Context implements SensorValueListener {
      * @param activityType the activity type. @see com.google.android.gms.location.DetectedActivity
      */
     public ActivityContext(String name, int activityType) {
-        super(ACTIVITY_CONTEXT_TYPE, name, false);
+        this(null, name, activityType);
+    }
+
+    /**
+     * Creates a ActivityContext
+     * @param id the identifier of the context
+     * @param name the name of the context
+     * @param activityType the activity type. @see com.google.android.gms.location.DetectedActivity
+     */
+    public ActivityContext(String id, String name, int activityType) {
+        super(id, name, false);
         this.activityType = activityType;
         this.confidence = 0;
     }

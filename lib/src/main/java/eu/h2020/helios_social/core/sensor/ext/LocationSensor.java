@@ -31,9 +31,9 @@ public class LocationSensor extends Sensor {
 
     private Location mCurrentLocation;
     // access to the Fused Location Provider API
-    private FusedLocationProviderClient mFusedLocationClient;
+    private final FusedLocationProviderClient mFusedLocationClient;
     // access to the Location Settings API
-    private SettingsClient mSettingsClient;
+    private final SettingsClient mSettingsClient;
 
     private LocationRequest mLocationRequest;
 
@@ -43,10 +43,10 @@ public class LocationSensor extends Sensor {
 
     private boolean mRequestingLocationUpdates;
 
-    private int mPriority;
+    private final int mPriority;
     // update intervals
-    private int mUpdateInterval;
-    private int mFastestUpdateInterval;
+    private final int mUpdateInterval;
+    private final int mFastestUpdateInterval;
     static final int UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
     static final int FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 2000;
 
@@ -83,13 +83,19 @@ public class LocationSensor extends Sensor {
      */
     @Override
     public void startUpdates() {
+        if(mRequestingLocationUpdates) {
+            return;
+        }
         // check if the device has the necessary location settings
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                        mRequestingLocationUpdates = true;
+                        try {
+                            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                            mRequestingLocationUpdates = true;
+                        } catch(SecurityException e) {
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

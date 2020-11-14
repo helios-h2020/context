@@ -15,7 +15,6 @@ public class LocationContext extends Context implements SensorValueListener {
 
     double lat, lon;
     double radius;
-    static final int LOCATION_CONTEXT_TYPE=1;
     Location location; // current location
 
     /**
@@ -28,7 +27,21 @@ public class LocationContext extends Context implements SensorValueListener {
      * @param radius the radius of the circle
      */
     public LocationContext(String name, double lat, double lon, double radius) {
-        super(LOCATION_CONTEXT_TYPE, name, false);
+        this(null, name, lat, lon, radius);
+    }
+
+    /**
+     * Creates a LocationContext.
+     * The context is defined by the latitude (lat) and longitude (lon) values and the radius,
+     * and is active in the circular area defined by center coordinates (lat, lon) and radius.
+     * @param id the identifier of the context
+     * @param name the name of the context
+     * @param lat the latitude value of the center point
+     * @param lon the longitude value of the center point
+     * @param radius the radius of the circle
+     */
+    public LocationContext(String id, String name, double lat, double lon, double radius) {
+        super(id, name, false);
         this.lat = lat;
         this.lon = lon;
         this.radius = radius;

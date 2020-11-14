@@ -28,7 +28,6 @@ public class TimeContext extends Context implements SensorValueListener {
 
     long startTime;
     long endTime;
-    static final int TIME_CONTEXT_TYPE=2;
 
     /**
      * Creates a TimeContext
@@ -37,7 +36,18 @@ public class TimeContext extends Context implements SensorValueListener {
      * @param endTime the end moment of the time interval (milliseconds since epoch)
      */
     public TimeContext(String name, long startTime, long endTime) {
-        super(TIME_CONTEXT_TYPE, name, false);
+        this(null, name, startTime, endTime);
+    }
+
+    /**
+     * Creates a TimeContext
+     * @param id the identifier of the context
+     * @param name the name of the context
+     * @param startTime the start moment of the time interval (milliseconds since epoch)
+     * @param endTime the end moment of the time interval (milliseconds since epoch)
+     */
+    public TimeContext(String id, String name, long startTime, long endTime) {
+        super(id, name, false);
         this.startTime = startTime;
         this.endTime = endTime;
     }

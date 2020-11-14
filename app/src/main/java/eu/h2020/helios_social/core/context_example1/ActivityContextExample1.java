@@ -1,15 +1,23 @@
 package eu.h2020.helios_social.core.context_example1;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import eu.h2020.helios_social.core.context.ext.ActivityContext;
 import eu.h2020.helios_social.core.sensor.SensorValueListener;
@@ -24,9 +32,6 @@ import eu.h2020.helios_social.core.sensor.ext.ActivitySensor;
 public class ActivityContextExample1 extends AppCompatActivity implements SensorValueListener {
 
     private static final String TAG = ActivityContextExample1.class.getSimpleName();
-
-    /* private boolean runningQOrLater =
-            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;*/
 
     // UI Widgets
     private Button mStartUpdatesButton;
@@ -52,7 +57,7 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     // Tracks the status of the activity updates request
     private Boolean mRequestingActivityUpdates;
 
-    // example walking context and sensor
+    // example activity contexts and sensor
     private ActivityContext mInVehicleContext;
     private ActivityContext mOnBicycleContext;
     private ActivityContext mOnFootContext;
@@ -62,6 +67,8 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     private ActivityContext mUnknownContext;
     private ActivityContext mWalkingContext;
     private ActivitySensor mActivitySensor;
+
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 11;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -188,6 +195,7 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     @Override
     public void onResume() {
         super.onResume();
+
         if (mRequestingActivityUpdates) {
             mActivitySensor.startUpdates();
         }
@@ -197,46 +205,10 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     @Override
     protected void onPause() {
         super.onPause();
-        // Remove location updates
+        // Stop updates from activity sensor
         if (mRequestingActivityUpdates) {
             mActivitySensor.stopUpdates();
         }
     }
-
-
-    /**
-     * On devices Android 10 and beyond (29+), ask for the ACTIVITY_RECOGNITION permission via the
-     * run-time permissions.
-     */
-    /*
-    private boolean activityRecognitionPermissionApproved() {
-        // permission check for 29+.
-        if (runningQOrLater) {
-
-            return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACTIVITY_RECOGNITION
-            );
-        } else {
-            return true;
-        }
-    }
-
-    public void onClickEnableOrDisableActivityRecognition(View view) {
-
-        if (activityRecognitionPermissionApproved()) {
-            if (activityTrackingEnabled) {
-                disableActivityTransitions();
-
-            } else {
-                enableActivityTransitions();
-            }
-
-        } else {
-            Intent startIntent = new Intent(this, PermissionRationalActivity.class);
-            startActivity(startIntent);
-        }
-    }
-    */
 
 }

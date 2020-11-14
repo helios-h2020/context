@@ -31,7 +31,7 @@ public class ActivitySensor extends Sensor {
     private Intent mIntent;
     private long mInterval;
     private ActivityReceiver mActivityReceiver;
-    private boolean activityTrackingEnabled;
+    private boolean mRequestingActivityUpdates;
 
     private ContextWrapper appEnv;
     // Action fired when activity updates are triggered.
@@ -47,7 +47,7 @@ public class ActivitySensor extends Sensor {
         this.mActivityRecognitionClient = ActivityRecognition.getClient(appEnv);
         this.appEnv = appEnv;
         this.mInterval = interval;
-        activityTrackingEnabled = false;
+        mRequestingActivityUpdates = false;
         createActivityRecognizer();
     }
 
@@ -61,11 +61,14 @@ public class ActivitySensor extends Sensor {
 
     @Override
     public void startUpdates() {
+        if(mRequestingActivityUpdates) {
+            return;
+        }
         mActivityRecognitionClient.requestActivityUpdates(mInterval, mPendingIntent)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void result) {
-                        activityTrackingEnabled = true;
+                        mRequestingActivityUpdates = true;
                         appEnv.registerReceiver(
                                 mActivityReceiver,
                                 new IntentFilter(RECEIVER_ACTION)
@@ -83,11 +86,14 @@ public class ActivitySensor extends Sensor {
 
     @Override
     public void stopUpdates() {
+        if (!mRequestingActivityUpdates) {
+            return;
+        }
         mActivityRecognitionClient.removeActivityUpdates(mPendingIntent)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        activityTrackingEnabled = false;
+                        mRequestingActivityUpdates = false;
                         appEnv.unregisterReceiver(mActivityReceiver);
                         Log.d(TAG,"Activity updates successfully unregistered.");
                     }

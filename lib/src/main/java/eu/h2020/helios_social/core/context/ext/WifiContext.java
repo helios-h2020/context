@@ -14,7 +14,6 @@ import eu.h2020.helios_social.core.sensor.SensorValueListener;
 public class WifiContext extends Context implements SensorValueListener {
 
     private String ssid;
-    private static final int WIFI_CONTEXT_TYPE=4;
     private static final String TAG = "HeliosWifiContext";
 
     /**
@@ -23,7 +22,17 @@ public class WifiContext extends Context implements SensorValueListener {
      * @param ssid the Wifi network service set id (SSID).
      */
     public WifiContext(String name, String ssid) {
-        super(WIFI_CONTEXT_TYPE, name, false);
+        this(null, name, ssid);
+    }
+
+    /**
+     * Creates a ActivityContext
+     * @param id the identifier of the context
+     * @param name the name of the context
+     * @param ssid the Wifi network service set id (SSID).
+     */
+    public WifiContext(String id, String name, String ssid) {
+        super(id, name, false);
         this.ssid = ssid;
     }
 
