@@ -3,10 +3,8 @@ package eu.h2020.helios_social.core.context_example1;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +23,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import eu.h2020.helios_social.core.context.Context;
+import eu.h2020.helios_social.core.context.ContextAnd;
+import eu.h2020.helios_social.core.context.ContextNot;
 import eu.h2020.helios_social.core.context.ext.ActivityContext;
 import eu.h2020.helios_social.core.context.ext.LocationContext;
 import eu.h2020.helios_social.core.profile.HeliosUserData;
@@ -48,12 +48,7 @@ public class MyContextsExample extends AppCompatActivity {
 
     // Code used in requesting runtime permissions
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
-    // Constant used in the location settings dialog
-    private static final int REQUEST_CHECK_SETTINGS = 0x1;
-
-    // Represents a geographical location
-    private Location mCurrentLocation;
+    private static final boolean runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     // UI Widgets
     private Button mStartUpdatesButton;
@@ -75,6 +70,8 @@ public class MyContextsExample extends AppCompatActivity {
     ActivityContext mTiltingContext;
     ActivityContext mUnknownContext;
     ActivityContext mWalkingContext;
+    ContextNot mMovingContext;
+    ContextAnd mMoving2Context;
 
     // Access the location sensor
     private LocationSensor mLocationSensor;
@@ -82,6 +79,10 @@ public class MyContextsExample extends AppCompatActivity {
     private ActivitySensor mActivitySensor;
 
     public static ArrayList<Context> mMyContexts;
+
+    static String activityPermission = runningQOrLater ? Manifest.permission.ACTIVITY_RECOGNITION :
+            "com.google.android.gms.permission.ACTIVITY_RECOGNITION";
+    static String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, activityPermission};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,10 +102,9 @@ public class MyContextsExample extends AppCompatActivity {
         HeliosUserData profile = HeliosUserData.getInstance();
         profile.setValue("home_lat", "60.1805");
         profile.setValue("home_lon", "24.8255");
-        profile.setValue("work_lat", "43.7208");
-        profile.setValue("work_lon", "10.4083");
-
-        // tests: retrieve home and work coordinates from the user profile
+        profile.setValue("work_lat", "60.1852");
+        profile.setValue("work_lon", "24.8172");
+        // retrieve home and work coordinates from the profile
         double home_lat = Double.parseDouble(profile.getValue("home_lat"));
         double home_lon = Double.parseDouble(profile.getValue("home_lon"));
         double work_lat = Double.parseDouble(profile.getValue("work_lat"));
@@ -115,7 +115,7 @@ public class MyContextsExample extends AppCompatActivity {
         locationContext1 = new LocationContext("At home", home_lat, home_lon, 1000.0);
         // Register listener to obtain changes in the context active value
         // Create an other context "At work"
-        locationContext2 = new LocationContext("At work", work_lat, work_lon, 3000.0);
+        locationContext2 = new LocationContext("At work", work_lat, work_lon, 1000.0);
 
         // Init LocationSensor
         mLocationSensor = new LocationSensor(this);
@@ -132,6 +132,8 @@ public class MyContextsExample extends AppCompatActivity {
         mTiltingContext = new ActivityContext("Tilting", DetectedActivity.TILTING);
         mUnknownContext = new ActivityContext("Unknown", DetectedActivity.UNKNOWN);
         mWalkingContext = new ActivityContext("Walking", DetectedActivity.WALKING);
+        mMovingContext = new ContextNot("Moving", mStillContext);
+        mMoving2Context = new ContextAnd("Moving, on foot", mMovingContext, mOnFootContext);
 
         mActivitySensor = new ActivitySensor(this); // , 2000);
         mActivitySensor.registerValueListener(mInVehicleContext);
@@ -155,17 +157,13 @@ public class MyContextsExample extends AppCompatActivity {
         mMyContexts.add(mTiltingContext);
         mMyContexts.add(mUnknownContext);
         mMyContexts.add(mWalkingContext);
+        mMyContexts.add(mMovingContext);
+        mMyContexts.add(mMoving2Context);
 
-        if (mRequestingLocationUpdates && checkPermissions()) {
-            mLocationSensor.startUpdates();
-            // mActivitySensor.startUpdates();
-        } else if (!checkPermissions()) {
-            requestPermissions();
+        if(!checkPermission(permissions[0]) || !checkPermission(permissions[1])) {
+            requestPermissions(permissions);
         }
 
-        if (mRequestingActivityUpdates) {
-            mActivitySensor.startUpdates();
-        }
     }
 
     @Override
@@ -198,14 +196,13 @@ public class MyContextsExample extends AppCompatActivity {
      * Handles the Start Context Updates button
      */
     public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
+        if (!mRequestingLocationUpdates && checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
             mLocationSensor.startUpdates();
         }
-        if (!mRequestingActivityUpdates) {
+        if (!mRequestingActivityUpdates && checkPermission(activityPermission)) {
             mRequestingActivityUpdates = true;
-            setButtonsEnabledState();
             mActivitySensor.startUpdates();
         }
     }
@@ -255,39 +252,39 @@ public class MyContextsExample extends AppCompatActivity {
                 .setAction(getString(actionStringId), listener).show();
     }
 
+
     /**
      * Return the current state of the permissions needed.
      */
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+    private boolean checkPermission(String permission) {
+        int permissionState = ActivityCompat.checkSelfPermission(this, permission);
+        Log.i(TAG, "checkPermission: " + permission + " " + (permissionState == PackageManager.PERMISSION_GRANTED));
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
-     * Request permissions to access location
+     * Request permissions
      */
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (shouldProvideRationale) {
-            showSnackbar(R.string.permission_rationale,
-                    android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            ActivityCompat.requestPermissions(MyContextsExample.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
-                        }
-                    });
-        } else {
-            ActivityCompat.requestPermissions(MyContextsExample.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+    private void requestPermissions(String[] permissions) {
+        boolean shouldProvideRationale = false;
+        for (String permission : permissions) {
+            shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, permission);
+            if (shouldProvideRationale) {
+                showSnackbar(R.string.permission_rationale,
+                        android.R.string.ok, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Request permission
+                                ActivityCompat.requestPermissions(MyContextsExample.this,
+                                        permissions, REQUEST_PERMISSIONS_REQUEST_CODE);
+                            }
+                        });
+                return;
+            }
         }
+        ActivityCompat.requestPermissions(MyContextsExample.this,
+                    permissions, REQUEST_PERMISSIONS_REQUEST_CODE);
+
     }
 
     /**
@@ -300,29 +297,16 @@ public class MyContextsExample extends AppCompatActivity {
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
                 Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mRequestingLocationUpdates) {
-                    Log.i(TAG, "Permission granted, updates requested, starting location updates");
-                    mLocationSensor.startUpdates();
+                return;
+            }
+            for(int i=0; i<grantResults.length; i++) {
+                if(grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i(TAG, "Permission" + permissions[i] + " granted");
+                } else { // Permission denied.
+                    Log.i(TAG, "Permission" + permissions[i] + " denied");
                 }
-            } else {
-                // Permission denied.
-                showSnackbar(R.string.permission_denied_explanation,
-                        R.string.settings, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Build intent that displays the App settings screen.
-                                Intent intent = new Intent();
-                                intent.setAction(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package",
-                                        BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        });
             }
         }
     }
+
 }

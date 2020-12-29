@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HELIOS LocationContext example1</string>
+    <string name="app_name">HELIOS ContextExample1</string>
 
     <string name="user_id">eu.h2020.helios_social.USER_ID</string>
 

@@ -120,17 +120,6 @@ public class ContextExample1 extends AppCompatActivity implements ContextListene
         double work_lat = Double.parseDouble(profile.getValue("work_lat"));
         double work_lon = Double.parseDouble(profile.getValue("work_lon"));
 
-        // An example of creation of CEN using CENlibrary for user1
-        // profile object is given as data for the ego node
-        ContextualEgoNetwork egoNetwork = ContextualEgoNetwork.createOrLoad("", "user1", profile);
-
-        // some tests with egoNode
-        Node egoNode = egoNetwork.getEgo();
-        Object nodeData = egoNode.getData();
-        if(nodeData != profile) {
-            Log.i("Context", "User data related to egoNode not found?");
-        }
-
         // Create location-based context named "At home".
         // The context is an instance of the LocationContext class
         locationContext1 = new LocationContext("At home", home_lat, home_lon, 1000.0);
@@ -147,6 +136,13 @@ public class ContextExample1 extends AppCompatActivity implements ContextListene
         mLocationSensor.registerValueListener(locationContext2);
         // Only for demo UI to obtain updates to location coordinates via ValueListener
         mLocationSensor.registerValueListener(this);
+
+        // An example of creation of CEN using CENlibrary for user1
+        ContextualEgoNetwork egoNetwork = ContextualEgoNetwork.createOrLoad("", "user1", null);
+
+        // some tests with egoNode
+        Node egoNode = egoNetwork.getEgo();
+        Object nodeData = egoNode.getData();
 
         /* Associate the created contexts into CEN  */
         egoNetwork.getOrCreateContext(locationContext1);

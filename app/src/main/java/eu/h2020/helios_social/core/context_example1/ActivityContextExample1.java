@@ -69,6 +69,7 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     private ActivitySensor mActivitySensor;
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 11;
+    private static final boolean runningQOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -126,7 +127,7 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     /**
      * This method implements the SensorValueListener interface receiveValue method, which
      * obtains values from the ActivitySensor
-     * @param value
+     * @param value the received value from the sensor
      */
     @Override
     public void receiveValue(Object value) {
@@ -196,8 +197,16 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
     public void onResume() {
         super.onResume();
 
-        if (mRequestingActivityUpdates) {
-            mActivitySensor.startUpdates();
+        if (runningQOrLater) {
+            if (mRequestingActivityUpdates && checkPermissions()) {
+                mActivitySensor.startUpdates();
+            } else if (!checkPermissions()) {
+                requestPermissions();
+            }
+        } else {
+            if (mRequestingActivityUpdates) {
+                mActivitySensor.startUpdates();
+            }
         }
         updateUI();
     }
@@ -209,6 +218,76 @@ public class ActivityContextExample1 extends AppCompatActivity implements Sensor
         if (mRequestingActivityUpdates) {
             mActivitySensor.stopUpdates();
         }
+    }
+
+    /* Check and request permissions for activity recognition */
+    /**
+     * Return the current state of the permissions needed.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private boolean checkPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    /**
+     * Request permissions for ACTIVITY_PECOGNITION
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACTIVITY_RECOGNITION);
+
+        if (shouldProvideRationale) {
+            showSnackbar(R.string.permission_rationale,
+                    android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(ActivityContextExample1.this,
+                                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    });
+        } else {
+            ActivityCompat.requestPermissions(ActivityContextExample1.this,
+                    new String[]{Manifest.permission.ACTIVITY_RECOGNITION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (mRequestingActivityUpdates) {
+                    Log.i(TAG, "Permission granted, starting activity updates");
+                    mActivitySensor.startUpdates();
+                }
+            } else {
+                // Permission denied.
+                Log.i(TAG, "Permission denied");
+            }
+        }
+    }
+
+    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+                              View.OnClickListener listener) {
+        Snackbar.make(
+                findViewById(android.R.id.content),
+                getString(mainTextStringId),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(actionStringId), listener).show();
     }
 
 }

@@ -43,8 +43,6 @@ A description on how to create a new context type:
 
 ## Android Studio project structure ##
 
-This Android Studio project contains the following components:
-
 * app - Context test application
 
 * doc - Additional documentation files

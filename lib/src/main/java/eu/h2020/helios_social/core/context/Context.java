@@ -3,6 +3,7 @@ package eu.h2020.helios_social.core.context;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This is the base class for HELIOS contexts.
@@ -23,12 +24,13 @@ public class Context {
 
 	/**
 	 * Creates a context
-	 * @param id the identifier of this context
+	 * @param id the identifier of this context.
 	 * @param name the name of this context
 	 * @param active is this context active
 	 */
-	public Context(String id, String name, boolean active) {
-		this.id = id; // TODO: if id == null, generate unique identifier?
+	public Context(final String id, String name, boolean active) {
+		// if given id == null, generates a new id for the context
+		this.id = (id == null) ? UUID.randomUUID().toString() : id;
 		this.name = name;
 		this.active = active;
 		attributes = new ArrayList<ContextAttribute>();
@@ -45,24 +47,17 @@ public class Context {
 	}
 
 	/**
+	 * Gets identifier of this context
+	 * @return the identifier of this context
+	 */
+	public final String getId() { return id; }
+
+	/**
 	 * Is context active?
 	 * @return active the active value(boolean)
 	 */
 	public boolean isActive() {
 		return active;
-	}
-
-	/**
-	 * Sets context active value
-	 * @param active the active value
-	 */
-	public void setActive(boolean active) {
-		if(active != this.active) {
-			this.active = active;
-			for (ContextListener listener : listeners) {
-				listener.contextChanged(active);
-			}
-		}
 	}
 
 	/**
@@ -80,10 +75,17 @@ public class Context {
 	}
 
 	/**
-	 * Gets identifier of this context
-	 * @return the identifier of this context
+	 * Sets context active value
+	 * @param active the active value
 	 */
-	public String getId() { return id; }
+	public void setActive(boolean active) {
+		if(active != this.active) {
+			this.active = active;
+			for (ContextListener listener : listeners) {
+				listener.contextChanged(active);
+			}
+		}
+	}
 
 	/**
 	 * Adds attribute for the context
