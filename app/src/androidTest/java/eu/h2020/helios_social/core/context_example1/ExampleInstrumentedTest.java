@@ -1,6 +1,7 @@
 package eu.h2020.helios_social.core.context_example1;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -21,7 +22,7 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
-        assertEquals("eu.h2020.helios_social.core.contexttestclient", appContext.getPackageName());
+        Log.i("Context", "package:" + appContext.getPackageName());
+        assertEquals("eu.h2020.helios_social.context_example1", appContext.getPackageName());
     }
 }

@@ -134,7 +134,7 @@ public class LocationSensor extends Sensor {
      * Sets up the location request
      */
     private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
+        mLocationRequest = LocationRequest.create(); // new LocationRequest();
 
         // set the desired interval for active location updates.
         mLocationRequest.setInterval(mUpdateInterval);

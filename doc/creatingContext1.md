@@ -1,6 +1,6 @@
-# Creating new context types #
+# Creating new context classes by extending the base Context class
 
-The following example shows how to create a new time-based context type.  The context is defined by given start and end times of the time span when the context is active. 
+The following example shows how to create a new time-based context class.  The context is defined by given start and end times of the time span when the context is active. 
 See the source code in the context repository: lib/src/main/java/eu/h2020/helios_social/core/context/ext/TimeContext.java
 
 First, the new class `TimeContext` extends the base class `Context` (eu.h2020.helios_social.core.context.Context) as follows:

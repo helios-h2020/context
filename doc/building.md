@@ -1,6 +1,6 @@
 # Building and installing the HELIOS ContextExample1 application #
 
-This application  utilizes the HELIOS context module. It implements two example location-based contexts: "at home" and "at work". It can be built using Android Studio (3.5.x).
+This application  utilizes the HELIOS context module. It implements two example location-based contexts: "at home" and "at work". It can be built using Android Studio (4.1.x).
 
 ## Cloning repositories ##
 
@@ -11,7 +11,7 @@ The core context module is included into the repository context.git.  See the do
 
 Steps to build the ContextExample1 application:
 
-  * Start Android Studio 3.5.x IDE
+  * Start Android Studio 4.1.x IDE
   * Select an option "Open an existing Android Studio project
   * Navigate and select cloned context directory
   * Clean the project. Select from menu: *Build=>Clean project*

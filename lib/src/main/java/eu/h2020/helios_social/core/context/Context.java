@@ -91,6 +91,7 @@ public class Context {
 	 * Adds attribute for the context
 	 * @param attr the attribute
 	 */
+	@Deprecated
 	public void addAttribute(ContextAttribute attr) {
 		attributes.add(attr);
 	}
@@ -99,6 +100,7 @@ public class Context {
 	 * Removes context attribute
 	 * @param attr the attribute
 	 */
+	@Deprecated
 	public void removeAttribute(ContextAttribute attr) {
 		attributes.remove(attr);
 	}
@@ -107,6 +109,7 @@ public class Context {
 	 * Gets all the attributes related to this context
 	 * @return the attributes
 	 */
+	@Deprecated
 	public Iterator<ContextAttribute> getAttributes() {
 		return attributes.iterator();
 	}

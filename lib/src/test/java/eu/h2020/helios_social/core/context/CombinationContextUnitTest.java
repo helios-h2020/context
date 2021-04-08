@@ -1,4 +1,4 @@
-package eu.h2020.helios_social.core;
+package eu.h2020.helios_social.core.context;
 
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;

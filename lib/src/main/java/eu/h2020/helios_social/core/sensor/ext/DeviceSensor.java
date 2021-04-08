@@ -19,10 +19,10 @@ import eu.h2020.helios_social.core.sensor.Sensor;
  *  @see eu.h2020.helios_social.core.sensor.Sensor
  */
 public class DeviceSensor extends Sensor implements SensorEventListener {
-    private SensorManager sensorManager;
-    private android.hardware.Sensor sensor;
-    private Handler handler;
-    private int sensorType;
+    private final SensorManager sensorManager;
+    private final android.hardware.Sensor sensor;
+    private final Handler handler;
+    private final int sensorType;
     private int samplingPeriodUs;
     private int maxReportLatencyUs;
     private boolean registered;
@@ -74,6 +74,13 @@ public class DeviceSensor extends Sensor implements SensorEventListener {
     public boolean isRegistered() {
         return (sensor != null && registered);
     }
+
+    /**
+     * Has related hardware sensor?
+     * @return Boolean value
+     */
+    public boolean hasSensor() { return sensor != null; }
+
 
     @Override
     public void startUpdates() {
