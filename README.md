@@ -14,11 +14,11 @@ The *Context Management API* provides methods to accessing and managing context 
 
 Context Manager is one of the HELIOS Core modules as highlighted in the picture below:
 
-![HELIOS Context Management API](./doc/images/helios-context.png "Context Management API")
+![HELIOS Context Management API](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/images/helios-context.png "Context Management API")
 
 ## API usage
 
-See javadocs in [javadocs.zip](./doc/javadocs.zip).
+See javadocs in [javadocs.zip](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/javadocs.zip).
 
 ### Introduction
 Applications should include this library by adding it in the specific build.gradle file. An example:
@@ -107,34 +107,34 @@ the importance of the received message in the user's context (see the method `ge
 
 See the source folder: "app/src/main/java/eu/h2020/helios_social/core/context_example1/"
 
-##### *LocationContext* example
+#### *LocationContext* example
 "ContextExample1.java" (Android app)
-- see the description: [ContextExample1.pdf](./doc/ContextExample1.pdf)
+- see the description: [ContextExample1.pdf](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/ContextExample1.pdf)
 - shows how to create two contexts "at work" and "at home". In addition, it shows how to relate 
 the created contexts to CEN (contextual ego network), and how to use profile information within the contexts
 - this example application depends on the modules: eu.h2020.helios_social.core.profile and eu.h2020.helios_social.core.contextualegonetwork
 
-##### *ActivityContext* example 
+#### *ActivityContext* example 
 "ActivityContextExample1.java" shows how to create contexts for different activity types: "Walking", "In vehicle", ... 
 
-##### *WifiContext* example
+#### *WifiContext* example
 A wifi-based context created (see "WifiContextExample1.java")
 
-##### *BluetoothLESensor* example
+#### *BluetoothLESensor* example
 A bluetooth LE sensor example ("BluetoothLESensorExample1.java")
 
-##### *DeviceSensor* example
+#### *DeviceSensor* example
 An example how to use the class DeviceSensor, which provides methods to use Android devices build-in 
 sensors that measure motion, orientation, and various environmental conditions ("DeviceSensorExample1.java").
 
-##### *MyContexts* example
+#### *MyContexts* example
 This example shows user's contexts and their status in a view ("MyContextsExample.java")
 
-#### How to build the example application
-- [how to build the example application.](./doc/building.md)
+### How to build the example application
+- [how to build the example application.](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/building.md)
 
-#### How to create a new context class by extending the base Context class
-- [creating a time-based context class](./doc/creatingContext1.md)
+### How to create a new context class by extending the base Context class
+- [creating a time-based context class](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/creatingContext1.md)
 
 
 ## Android Studio project structure
