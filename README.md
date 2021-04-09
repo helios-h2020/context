@@ -4,10 +4,10 @@
 
 ## Introduction
 
-The Context manager module handles context-related monitoring and reasoning for the user. It provides a framework for  
-contexts and context detection with core implementations. New context classes can be introduced by extending the provided 
-base class implementations. The context manager can access sensors with the help of a separate Sensor Manager as well 
-as other context sources. The Context module includes also information overload control interface to contextually 
+The Context manager module handles context-related monitoring and reasoning for the user. It provides a framework for
+implementing contexts and context detection with core implementations. New context classes can be introduced by extending 
+the provided base class implementations. The context manager can access sensors with the help of a separate Sensor Manager 
+as well as other context sources. The Context module includes also information overload control interface to contextually 
 limit the amount of incoming message alerts for the user
 
 The *Context Management API* provides methods to accessing and managing context information.
