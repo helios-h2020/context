@@ -5,7 +5,7 @@
 ## Introduction
 
 The Context manager module handles context-related monitoring and reasoning for the user. It provides a framework for implementing 
-context types and context detection with core implementations. New context classes can be introduced by extending the provided 
+contexts and context detection with core implementations. New context classes can be introduced by extending the provided 
 base class implementations. The context manager can access sensors with the help of a separate Sensor Manager as well 
 as other context sources. The Context module includes also information overload control interface to contextually 
 limit the amount of incoming message alerts for the user
@@ -131,11 +131,10 @@ sensors that measure motion, orientation, and various environmental conditions (
 This example shows user's contexts and their status in a view ("MyContextsExample.java")
 
 ### How to build the example application
-- [how to build the example application.](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/building.md)
+- <a href="https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/building.md" type="text/markdown">[how to build the example application.]</a>
 
 ### How to create a new context class by extending the base Context class
-- [creating a time-based context class](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/creatingContext1.md)
-
+- <a href="https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/creatingContext1.md">[creating a time-based context class]</a>
 
 ## Android Studio project structure
 
