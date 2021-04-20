@@ -39,7 +39,8 @@ public class DeviceSensor extends Sensor implements SensorEventListener {
      * @param maxReportLatencyUs
      * @param handler
      */
-    public DeviceSensor(Context appEnv, int sensorType, int samplingPeriodUs, int maxReportLatencyUs, Handler handler) {
+    public DeviceSensor(String id, Context appEnv, int sensorType, int samplingPeriodUs, int maxReportLatencyUs, Handler handler) {
+        super(id);
         this.sensorManager = (SensorManager) appEnv.getSystemService(Context.SENSOR_SERVICE);
         this.sensor = sensorManager.getDefaultSensor(sensorType);
         this.sensorType = sensorType;
@@ -55,7 +56,7 @@ public class DeviceSensor extends Sensor implements SensorEventListener {
      * @param sensorType
      */
     public DeviceSensor(Context appEnv, int sensorType) {
-        this(appEnv, sensorType, SensorManager.SENSOR_DELAY_NORMAL, 0, null);
+        this(null, appEnv, sensorType, SensorManager.SENSOR_DELAY_NORMAL, 0, null);
     }
 
     @Override

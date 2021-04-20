@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import eu.h2020.helios_social.core.context.Context;
 import eu.h2020.helios_social.core.contextualegonetwork.ContextualEgoNetwork;
@@ -15,26 +18,80 @@ import eu.h2020.helios_social.core.contextualegonetwork.ContextualEgoNetwork;
  */
 public class MyContexts {   
 
-    private final List<Context> myContexts;
+    private final Map<String,Context> myContexts;
     private final ContextualEgoNetwork cen;
+    private final MyContextsDao myContextsDao;
 
     /**
      * Creates a MyContexts instance
-     * @param cen the contextual ego network
+     * @param cen the contextual ego network (or null)
+     * @param myContextsDb MyContextsDatabase (or null)
      */
-    public MyContexts(ContextualEgoNetwork cen) {
-        this.myContexts = new ArrayList<Context>();
+    public MyContexts(ContextualEgoNetwork cen, MyContextsDatabase myContextsDb) {
+        this.myContexts = new ConcurrentHashMap<>();
         this.cen = cen;
+        if(myContextsDb !=null) {
+            this.myContextsDao = myContextsDb.myContextsDao();
+            readContexts(true);
+        } else {
+            this.myContextsDao = null;
+        }
     }
 
     /**
-     * Adds a context into MyContexs and associates it with contextual ego network
+     * Read all contexts from the database
+     * @param wait if true, wait for read completing
+     */
+    private void readContexts(boolean wait) {
+        MyContextsDatabase.databaseWriteExecutor.execute(() -> {
+            List<MyContextsEntity> myContextsEntities = myContextsDao.getContexts();
+            int prevSize = myContextsEntities.size() + 1;
+            while(myContextsEntities.size() > 0 && myContextsEntities.size() < prevSize) {
+                List<MyContextsEntity> incompleteEntities = new ArrayList<>();
+                for (MyContextsEntity contextEntity : myContextsEntities) {
+                    Context context = null;
+                    try {
+                        context = contextEntity.getContext(myContexts);
+                    } catch (Exception e) {
+                    }
+                    if (context != null) {
+                        myContexts.put(context.getId(), context);
+                    } else {
+                        incompleteEntities.add(contextEntity);
+                    }
+                }
+                prevSize = myContextsEntities.size();
+                myContextsEntities = incompleteEntities;
+            }
+        });
+        if(wait) {
+            try {
+                MyContextsDatabase.databaseWriteExecutor.awaitTermination(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Adds a context into MyContexts and associates it with contextual ego network
      * @param context the context
      */
     public void add(@NonNull Context context) {
-        myContexts.add(context);
-        if (cen != null) {
-            cen.getOrCreateContext(context);
+        if(myContexts.get(context.getId()) == null) {
+            myContexts.put(context.getId(), context);
+            if (myContextsDao != null) {
+                MyContextsDatabase.databaseWriteExecutor.execute(() -> {
+                    try {
+                        myContextsDao.add(new MyContextsEntity(context));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            if (cen != null) {
+                cen.getOrCreateContext(context.getId());
+            }
         }
     }
 
@@ -43,27 +100,45 @@ public class MyContexts {
      * @param context the context
      */
     public void remove(@NonNull Context context) {
-        myContexts.remove(context);
-        if(cen != null) {
-            eu.h2020.helios_social.core.contextualegonetwork.Context cenContext = CenUtils.getCenContext(cen, context);
-            if(cenContext != null) {
-                cen.removeContext(cenContext);
+        if(myContexts.get(context.getId()) != null) {
+            myContexts.remove(context.getId());
+            if (myContextsDao != null) {
+                MyContextsDatabase.databaseWriteExecutor.execute(() -> {
+                    MyContextsEntity myContextsEntity = myContextsDao.getContextById(context.getId());
+                    if (myContextsEntity != null) {
+                        myContextsDao.remove(myContextsEntity);
+                    }
+                });
+            }
+            if (cen != null) {
+                eu.h2020.helios_social.core.contextualegonetwork.Context cenContext = CenUtils.getCenContext(cen, context.getId());
+                if (cenContext != null) {
+                    cen.removeContext(cenContext);
+                }
             }
         }
+    }
+
+    public void removeAll() {
+        if (cen != null) {
+            for(String contextId : myContexts.keySet()) {
+                eu.h2020.helios_social.core.contextualegonetwork.Context cenContext = CenUtils.getCenContext(cen, contextId);
+                if (cenContext != null) {
+                    cen.removeContext(cenContext);
+                }
+            }
+        }
+        myContexts.clear();
+        MyContextsDatabase.databaseWriteExecutor.execute(myContextsDao::removeAll);
     }
 
     /**
      * Returns context by given id
      * @param id the context ids
-     * @return
+     * @return the context
      */
     public Context getContextById(@NonNull String id) {
-        for(Context c: myContexts) {
-            if(c.getId().equals(id)) {
-                return c;
-            }
-        }
-        return null;
+        return myContexts.get(id);
     }
 
     /**
@@ -72,7 +147,7 @@ public class MyContexts {
      */
     public List<Context> getActiveContexts() {
         ArrayList<Context> activeContexts = new ArrayList<Context>();
-        for(Context c: myContexts) {
+        for(Context c: myContexts.values()) {
             if(c.isActive()) {
                 activeContexts.add(c);
             }
@@ -85,7 +160,7 @@ public class MyContexts {
      * @return the list of contexts
      */
     public List<Context> getContexts() {
-        return myContexts;
+        return new ArrayList<>(myContexts.values());
     }
 
     /**
@@ -95,6 +170,4 @@ public class MyContexts {
     public ContextualEgoNetwork getCen() {
         return cen;
     }
-
-    // TODO   save() and restore() ?
 }

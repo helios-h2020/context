@@ -44,8 +44,25 @@ public class ContextAnd extends Context implements ContextListener {
         contextB.registerContextListener(this);
     }
 
+    /**
+     * Returns the first context of ContextOr
+     * @return the contextA
+     */
+    public Context getContextA() {
+        return contextA;
+    }
+
+    /**
+     * Returns the second context of ContextOr
+     * @return the contextB
+     */
+    public Context getContextB() {
+        return contextB;
+    }
+
     @Override
     public void contextChanged(boolean active) {
         setActive(contextA.isActive() && contextB.isActive());
     }
+
 }

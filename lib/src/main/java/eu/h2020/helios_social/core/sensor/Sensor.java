@@ -1,8 +1,11 @@
 package eu.h2020.helios_social.core.sensor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Sensor is an abstract base class for Helios sensors (e.g. location and acceleration sensors).
@@ -12,14 +15,35 @@ import java.util.List;
  */
 public abstract class Sensor {
 
+	// identifier of this
+	private final String id;
+	// listeners of this sensor
 	private final List<SensorValueListener> sensorListeners;
+	// all sensors
+	private static final Map<String,Sensor> sensors = new HashMap<String, Sensor>();
+
+	/**
+	 * Creates a Sensor
+	 * @param id the identifier of this sensor.
+	 */
+	public Sensor(String id) {
+		this.id =  (id == null) ? UUID.randomUUID().toString() : id;
+		this.sensorListeners = new ArrayList<SensorValueListener>();
+		this.sensors.put(id, this);
+	}
 
 	/**
 	 * Creates a Sensor
 	 */
 	public Sensor() {
-		this.sensorListeners = new ArrayList<SensorValueListener>();
+		this(null);
 	}
+
+	/**
+	 * Gets identifier of this sensor
+	 * @return the identifier of this sensor
+	 */
+	public final String getId() { return id; }
 
 	/**
 	 * Starts receiving sensor data values
@@ -64,5 +88,20 @@ public abstract class Sensor {
 	 */
 	public Iterator<SensorValueListener> getValueListeners() {
 		return sensorListeners.iterator();
+	}
+
+	/**
+	 * Returns Sensor by given id
+	 * @param id the identifier
+	 * @return the sensor
+	 */
+	public static Sensor getSensorById(String id) {
+		return sensors.get(id);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		this.sensors.remove(id, this);
 	}
 }

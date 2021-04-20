@@ -20,9 +20,18 @@ public class TimeSensor extends Sensor {
      * Creates a new TimeSensor
      * @param timeInterval the time interval in milliseconds
      */
-    public TimeSensor(int timeInterval) {
+    public TimeSensor(String id, int timeInterval) {
+        super(id);
         this.timeInterval = timeInterval;
         this.scheduler = null;
+    }
+
+    /**
+     * Creates a new TimeSensor
+     * @param timeInterval the time interval in milliseconds
+     */
+    public TimeSensor(int timeInterval) {
+        this(null, timeInterval);
     }
 
     @Override

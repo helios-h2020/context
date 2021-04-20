@@ -26,8 +26,8 @@ import eu.h2020.helios_social.core.sensor.SensorValueListener;
  */
 public class TimeContext extends Context implements SensorValueListener {
 
-    long startTime;
-    long endTime;
+    final long startTime;
+    final long endTime;
 
     /**
      * Creates a TimeContext
@@ -53,6 +53,22 @@ public class TimeContext extends Context implements SensorValueListener {
     }
 
     /**
+     * Returns start time
+     * @return the start time (milliseconds since epoch)
+     */
+    public long getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Returns end time
+     * @return the end time (milliseconds since epoch)
+     */
+    public long getEndTime() {
+        return endTime;
+    }
+
+    /**
      * Receive updated time values from the time sensor.
      * For example, from the TimeSensor {@see eu.h2020.helios_social.core.sensor.ext.TimeSensor}.
      * In order to receive the time updates, this context should be registered as a SensorValueListener
@@ -66,4 +82,5 @@ public class TimeContext extends Context implements SensorValueListener {
         // set the context active (True), otherwise inactive (False)
         setActive(startTime <= currentTime && endTime >= currentTime);
     }
+
 }

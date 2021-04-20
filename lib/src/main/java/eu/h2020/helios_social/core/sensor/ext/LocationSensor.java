@@ -55,7 +55,7 @@ public class LocationSensor extends Sensor {
      * @param appContext the application environment (e.g. an Activity or a Service)
      */
     public LocationSensor(ContextWrapper appContext) {
-        this(appContext, UPDATE_INTERVAL_IN_MILLISECONDS, FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationRequest.PRIORITY_HIGH_ACCURACY);
+        this(null, appContext, UPDATE_INTERVAL_IN_MILLISECONDS, FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     /**
@@ -65,7 +65,8 @@ public class LocationSensor extends Sensor {
      * @param fastestUpdateInterval the fastest update interval
      * @param priority the location reguest priority value
      */
-    public LocationSensor(ContextWrapper appContext, int updateInterval, int fastestUpdateInterval, int priority) {
+    public LocationSensor(String id, ContextWrapper appContext, int updateInterval, int fastestUpdateInterval, int priority) {
+        super(id);
         this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(appContext);
         this.mSettingsClient = LocationServices.getSettingsClient(appContext);
         this.mCurrentLocation = null;

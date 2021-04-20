@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class MessageContextRepository {
         MessageContextDatabase db = MessageContextDatabase.getDatabase(appContext);
         this.mMessageContextDao = db.messageContextDao();
         this.maxSize = maxSize;
-        this.mMessageContexts = new ArrayList<MessageContext>();
+        this.mMessageContexts = Collections.synchronizedList(new ArrayList<MessageContext>());
 
         MessageContextDatabase.databaseWriteExecutor.execute(() -> {
             List<MessageContext> messageContexts = mMessageContextDao.getMessages();

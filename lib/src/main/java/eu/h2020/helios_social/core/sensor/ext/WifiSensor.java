@@ -31,13 +31,22 @@ public class WifiSensor extends Sensor {
      * Creates a WifiSensor
      * @param appEnv the application env
      */
-    public WifiSensor(ContextWrapper appEnv) {
+    public WifiSensor(String id, ContextWrapper appEnv) {
+        super(id);
         this.appEnv = appEnv;
         mWifiManager = (WifiManager) appEnv.getSystemService(Context.WIFI_SERVICE);
         // The receiver listens for the changed network state
         mWifiReceiver = new WifiSensorReceiver();
         ssid = null;
         registered = false;
+    }
+
+    /**
+     * Creates a WifiSensor
+     * @param appEnv the application env
+     */
+    public WifiSensor(ContextWrapper appEnv) {
+        this(null, appEnv);
     }
 
     @Override

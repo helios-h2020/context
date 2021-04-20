@@ -16,46 +16,50 @@ public class CenUtils {
     /**
      * Associates context with contextual ego network
      * @param cen
-     * @param context
+     * @param contextId
      * @return
      */
-    public static eu.h2020.helios_social.core.contextualegonetwork.Context addContext(ContextualEgoNetwork cen, Context context) {
-        return cen.getOrCreateContext(context);
+    public static eu.h2020.helios_social.core.contextualegonetwork.Context addContext(ContextualEgoNetwork cen, String contextId) {
+        return cen.getOrCreateContext(contextId);
     }
 
     /**
      * Gets contexts of an Alter of cen
      * @param cen
+     * param myContexts
      * @param alter
      * @return
      */
-    public static List<Context> getContexts(ContextualEgoNetwork cen, String alter) {
+    public static List<Context> getContexts(ContextualEgoNetwork cen, MyContexts myContexts, String alter) {
         ArrayList<Context> contexts = new ArrayList<Context>();
         List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
         for(eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
             List<Node> nodes = cenContext.getNodes();
             for(Node node : nodes) {
                 if(node.getId().equals(alter)) {
-                    Object context = cenContext.getData();
-                    if(context != null && context instanceof Context) {
-                        contexts.add((Context)context);
+                    Object contextId = cenContext.getData();
+                    if(contextId != null && contextId instanceof String) {
+                        Context context = myContexts.getContextById((String)contextId);
+                        if(context != null) {
+                            contexts.add((Context) context);
+                        }
                     }
                 }
             }
         }
-        return contexts; // contexts.iterator();
+        return contexts;
     }
 
     /**
      * Checks if a context is associated with cen
      * @param cen
-     * @param context
+     * @param contextId
      * @return
      */
-    public static boolean hasContext(ContextualEgoNetwork cen, Context context) {
+    public static boolean hasContext(ContextualEgoNetwork cen, String contextId) {
         List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
         for(eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
-            if (context.equals(cenContext.getData())) {
+            if (contextId.equals(cenContext.getData())) {
                 return true;
             }
         }
@@ -65,26 +69,14 @@ public class CenUtils {
     /**
      * Gets contextual layer of cen on the basis of the related context of the layer
      */
-    public static eu.h2020.helios_social.core.contextualegonetwork.Context getCenContext(ContextualEgoNetwork cen, Context context) {
+    public static eu.h2020.helios_social.core.contextualegonetwork.Context getCenContext(ContextualEgoNetwork cen, String contextId) {
         List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
         for(eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
-            if (context.equals(cenContext.getData())) {
+            if (contextId.equals(cenContext.getData())) {
                 return cenContext;
             }
         }
         return null;
-    }
-
-    /**
-     * Gets the trust value of an Alter in a Context
-     * @param cen the Contextual Ego Network
-     * @param alter the Alter node
-     * @param context the Context
-     * @return the trust value
-     */
-    public static double getTrust(ContextualEgoNetwork cen, String alter, Context context) {
-        //  trustManager.getTrust(cenContext, alterNode);     // TODO.   CEN does not currently provide getTrust method?  Should use directly trustmanager
-        return -1.0;
     }
 
 }

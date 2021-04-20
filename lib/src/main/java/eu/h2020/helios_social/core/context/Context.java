@@ -1,9 +1,14 @@
 package eu.h2020.helios_social.core.context;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+
+import eu.h2020.helios_social.core.sensor.Sensor;
+import eu.h2020.helios_social.core.sensor.SensorValueListener;
 
 /**
  * This is the base class for HELIOS contexts.
@@ -20,6 +25,7 @@ public class Context {
 	private String name;
 	private boolean active;
 	private final List<ContextAttribute> attributes;
+	private final List<Sensor> sensors;
 	private final List<ContextListener> listeners;
 
 	/**
@@ -34,6 +40,7 @@ public class Context {
 		this.name = name;
 		this.active = active;
 		attributes = new ArrayList<ContextAttribute>();
+		sensors = new ArrayList<Sensor>();
 		listeners = new ArrayList<ContextListener>();
 	}
 
@@ -88,6 +95,50 @@ public class Context {
 	}
 
 	/**
+	 * Relates a sensor input to the context.
+	 * @param sensor the sensor
+	 */
+	public void addSensor(@NonNull Sensor sensor) {
+		if(this instanceof SensorValueListener) {
+			if(!sensors.contains(sensor)) {
+				sensor.registerValueListener((SensorValueListener) this);
+				sensors.add(sensor);
+			}
+		}
+	}
+
+	/**
+	 * Relates a list of sensors to the context.
+	 * @param sensors the sensor list
+	 */
+	public void addSensors(List<Sensor> sensors) {
+		if(sensors != null) {
+			for(Sensor sensor : sensors) {
+				addSensor(sensor);
+			}
+		}
+	}
+
+	/**
+	 * Removes a sensor from the context
+	 * @param sensor the sensor
+	 */
+	public void removeSensor(@NonNull Sensor sensor) {
+		if(this instanceof SensorValueListener) {
+			sensor.unregisterValueListener((SensorValueListener) this);
+			sensors.remove(sensor);
+		}
+	}
+
+	/**
+	 * Gets sensors
+	 * @return the sensors
+	 */
+	public Iterator<Sensor> getSensors() {
+		return sensors.iterator();
+	}
+
+	/**
 	 * Adds attribute for the context
 	 * @param attr the attribute
 	 */
@@ -138,4 +189,5 @@ public class Context {
 	public Iterator<ContextListener> getContextListeners() {
 		return listeners.iterator();
 	}
+
 }

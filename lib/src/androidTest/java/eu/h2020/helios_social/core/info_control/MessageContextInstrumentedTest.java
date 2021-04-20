@@ -73,7 +73,7 @@ public class MessageContextInstrumentedTest {
         history = repository.getMessages();
         Log.i("Context", "history size:" + history.size());
         
-        MyContexts myContexts = new MyContexts(null);
+        MyContexts myContexts = new MyContexts(null, null);
         Context context1 = new Context("context1", false);
         myContexts.add(context1);
         Context context2 = new Context("context2", false);

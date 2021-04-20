@@ -27,13 +27,23 @@ public class BluetoothSensor extends Sensor {
     private static final String TAG = "HeliosBluetoothSensor";
 
     /**
-     * Creates a WifiSensor
+     * Creates a BluetoothSensor
+     *
+     * @param appEnv the application env
+     */
+    public BluetoothSensor(String id, ContextWrapper appEnv) {
+        super(id);
+        this.appEnv = appEnv;
+        createBluetoothAdapter();
+    }
+
+    /**
+     * Creates a BluetoothSensor
      *
      * @param appEnv the application env
      */
     public BluetoothSensor(ContextWrapper appEnv) {
-        this.appEnv = appEnv;
-        createBluetoothAdapter();
+        this(null, appEnv);
     }
 
     @Override

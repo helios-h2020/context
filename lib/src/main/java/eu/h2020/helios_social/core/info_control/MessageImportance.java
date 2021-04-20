@@ -1,5 +1,7 @@
 package eu.h2020.helios_social.core.info_control;
 
+import androidx.annotation.NonNull;
+
 import eu.h2020.helios_social.core.context.Context;
 
 /**
@@ -7,7 +9,7 @@ import eu.h2020.helios_social.core.context.Context;
  * - associates importance value in context to message
  */
 public class MessageImportance {
-    private final Context context;
+    private final ContextProbability contextProbability;
     private final int importance;
 
     // message importance value constants
@@ -19,12 +21,12 @@ public class MessageImportance {
     public static final int IMPORTANCE_VERY_HIGH = 5;
 
     /**
-     * Creates MessageImporttance
-     * @param context the context
+     * Creates a MessageImportance
+     * @param contextProbability the context's probability
      * @param importance the importance value
      */
-    public MessageImportance(Context context, int importance) {
-        this.context = context;
+    public MessageImportance(@NonNull ContextProbability contextProbability, int importance) {
+        this.contextProbability = contextProbability;
         this.importance = importance;
     }
 
@@ -32,7 +34,7 @@ public class MessageImportance {
      * Returns context
      * @return the context
      */
-    public Context getContext() {return context; }
+    public Context getContext() {return contextProbability.getContext(); }
 
     /**
      * Returns importance value
@@ -41,6 +43,12 @@ public class MessageImportance {
     public int getImportance() {
         return importance;
     }
+
+    /**
+     * Returns context probability
+     * @return the probability value
+     */
+    public double getContextProbability() { return contextProbability.getProbability(); }
 
     /**
      * Returns importance level value based on the importance value on scale [0,1]

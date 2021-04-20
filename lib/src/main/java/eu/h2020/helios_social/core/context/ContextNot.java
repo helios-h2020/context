@@ -40,8 +40,17 @@ public class ContextNot extends Context implements ContextListener {
         context.registerContextListener(this);
     }
 
+    /**
+     * Returns the related context of this
+     * @return the context
+     */
+    public Context getContextNot() {
+        return context;
+    }
+
     @Override
     public void contextChanged(boolean active) {
         setActive(!context.isActive());
     }
+
 }

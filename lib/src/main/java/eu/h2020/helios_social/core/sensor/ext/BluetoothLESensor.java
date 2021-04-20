@@ -31,13 +31,14 @@ public class BluetoothLESensor extends Sensor {
     private ScanSettings settings;
     private static final String TAG = "HeliosBluetoothLESensor";
 
+
     /**
      * Creates a BluetoothLESensor
      *
      * @param appEnv the application env
      */
     public BluetoothLESensor(ContextWrapper appEnv) {
-        this(appEnv, null, new ScanSettings.Builder().build());
+        this(null, appEnv, null, new ScanSettings.Builder().build());
     }
 
     /**
@@ -47,7 +48,8 @@ public class BluetoothLESensor extends Sensor {
      * @param filters
      * @param settings
      */
-    public BluetoothLESensor(ContextWrapper appEnv, List<ScanFilter> filters, ScanSettings settings) {
+    public BluetoothLESensor(String id, ContextWrapper appEnv, List<ScanFilter> filters, ScanSettings settings) {
+        super(id);
         this.appEnv = appEnv;
         this.filters = filters;
         this.settings = settings;

@@ -94,6 +94,4 @@ public class ContextClassifier {
         return contextProbabilities;
     }
 
-    // TODO:  save and restore model ...
-
 }

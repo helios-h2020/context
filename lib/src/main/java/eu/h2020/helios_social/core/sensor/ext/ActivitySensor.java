@@ -3,7 +3,6 @@ package eu.h2020.helios_social.core.sensor.ext;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
@@ -33,7 +32,7 @@ public class ActivitySensor extends Sensor {
     private ActivityReceiver mActivityReceiver;
     private boolean mRequestingActivityUpdates;
 
-    private ContextWrapper appEnv;
+    private Context appEnv;
     // Action fired when activity updates are triggered.
     private static final String RECEIVER_ACTION = "HELIOS_ACTIVITY_SENSOR_RECEIVER_ACTION";
     private static final String TAG = "HeliosActivitySensor";
@@ -43,7 +42,8 @@ public class ActivitySensor extends Sensor {
      * @param appEnv the application env
      * @param interval the detection interval
      */
-    public ActivitySensor(ContextWrapper appEnv, long interval) {
+    public ActivitySensor(String id, Context appEnv, long interval) {
+        super(id);
         this.mActivityRecognitionClient = ActivityRecognition.getClient(appEnv);
         this.appEnv = appEnv;
         this.mInterval = interval;
@@ -55,8 +55,8 @@ public class ActivitySensor extends Sensor {
      * Creates a ActivitySensor
      * @param appEnv the application env
      */
-    public ActivitySensor(ContextWrapper appEnv) {
-        this(appEnv, 0);
+    public ActivitySensor(Context appEnv) {
+        this(null, appEnv, 0);
     }
 
     @Override

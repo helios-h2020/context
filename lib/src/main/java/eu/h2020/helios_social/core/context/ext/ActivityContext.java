@@ -17,7 +17,7 @@ import eu.h2020.helios_social.core.sensor.SensorValueListener;
  */
 public class ActivityContext extends Context implements SensorValueListener {
 
-    private int activityType;
+    private final int activityType;
     private int confidence;
     private static final String TAG = "HeliosActivityContext";
 
@@ -40,6 +40,10 @@ public class ActivityContext extends Context implements SensorValueListener {
         super(id, name, false);
         this.activityType = activityType;
         this.confidence = 0;
+    }
+
+    public int getActivityType() {
+        return activityType;
     }
 
     /**
@@ -65,4 +69,5 @@ public class ActivityContext extends Context implements SensorValueListener {
         Log.d(TAG, "received confidence value: " + confidence);
         setActive((confidence >= 70 || (isActive() && confidence >= 30) ));
     }
+
 }
