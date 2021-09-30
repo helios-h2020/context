@@ -2,6 +2,8 @@ package eu.h2020.helios_social.core.info_control;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +98,20 @@ public class MyContexts {
     }
 
     /**
+     * Updates MyContextsDatabase with updates in given context
+     * @param context the context
+     */
+    public void update(@NonNull Context context) {
+        MyContextsDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                myContextsDao.update(new MyContextsEntity(context));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
      * Removes a context from MyContexts and from contextual ego network
      * @param context the context
      */
@@ -132,6 +148,13 @@ public class MyContexts {
         MyContextsDatabase.databaseWriteExecutor.execute(myContextsDao::removeAll);
     }
 
+    public void setActive(@NonNull Context context, boolean active) {
+        if(context.isActive() != active) {
+            context.setActive(active);
+            update(context);
+        }
+    }
+
     /**
      * Returns context by given id
      * @param id the context ids
@@ -162,6 +185,12 @@ public class MyContexts {
     public List<Context> getContexts() {
         return new ArrayList<>(myContexts.values());
     }
+
+    /**
+     * Returns the number of contexts in MyContexts
+     * @return the number of contexts
+     */
+    public int size() { return myContexts.size(); }
 
     /**
      * Returns the associated contextual ego network

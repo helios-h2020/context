@@ -13,12 +13,11 @@ import java.util.List;
 
 import eu.h2020.helios_social.core.context.Context;
 
-import static org.junit.Assert.assertEquals;
-
 /**
- * Instrumented test, which will execute on an Android device.
+ * InfoControl instrumented test, which will execute on an Android device.
  *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * @see InfoControl
+ * @see MessageContext
  */
 @RunWith(AndroidJUnit4.class)
 public class InfoControlInstrumentedTest {

@@ -63,6 +63,6 @@ public class WifiContext extends Context implements SensorValueListener {
     public void receiveValue(Object value) {
         Log.d(TAG, "received Wifi ssid value");
         String received_ssid = (String) value;
-        setActive(received_ssid != null && ssid != null && received_ssid.equals(ssid));
+        setActive(received_ssid != null && received_ssid.equals(ssid));
     }
 }

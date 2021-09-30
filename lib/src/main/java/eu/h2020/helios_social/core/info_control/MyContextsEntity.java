@@ -24,7 +24,7 @@ import eu.h2020.helios_social.core.context.ext.WifiContext;
 import eu.h2020.helios_social.core.sensor.Sensor;
 
 /**
- * MyContextsEntity class represents a context entity of MyContexts, and it sis associated with MyContextsDatabase.
+ * MyContextsEntity class represents a context entity of MyContexts, and it is associated with MyContextsDatabase.
  */
 @Entity(tableName = "mycontexts_table")
 public class MyContextsEntity {
@@ -151,7 +151,8 @@ public class MyContextsEntity {
         } else if (TimeContext.class.isAssignableFrom(contextClass)) {
             long startTime = parameters.getLong("start_time");
             long endTime = parameters.getLong("end_time");
-            context = new TimeContext(contextId, name, startTime, endTime);
+            int repeat = parameters.getInt("repeat");
+            context = new TimeContext(contextId, name, startTime, endTime, repeat);
         } else if (WifiContext.class.isAssignableFrom(contextClass)) {
             String ssid = parameters.getString("ssid");
             context = new WifiContext(contextId, name, ssid);
@@ -182,7 +183,6 @@ public class MyContextsEntity {
             json.put("context", ((ContextNot)context).getContextNot().getId());
         } else if(context instanceof ActivityContext) {
             json.put("activity_type", ((ActivityContext)context).getActivityType());
-            json.put("confidence", ((ActivityContext)context).getConfidence());
         } else if(context instanceof LocationContext) {
             json.put("latitude", ((LocationContext)context).getLat());
             json.put("longitude", ((LocationContext)context).getLon());
@@ -192,6 +192,7 @@ public class MyContextsEntity {
         } else if(context instanceof TimeContext) {
             json.put("start_time", ((TimeContext)context).getStartTime());
             json.put("end_time", ((TimeContext)context).getEndTime());
+            json.put("repeat", ((TimeContext)context).getRepeat());
         }
         return json;
     }

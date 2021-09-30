@@ -267,9 +267,8 @@ public class ContextExample1 extends AppCompatActivity implements ContextListene
     @Override
     protected void onPause() {
         super.onPause();
-        // Remove location updates
+        // Remove location updates by LocationSensor
         mLocationSensor.stopUpdates();
-        // mActivitySensor.stopUpdates();
     }
 
     private void showSnackbar(final int mainTextStringId, final int actionStringId,
@@ -322,13 +321,14 @@ public class ContextExample1 extends AppCompatActivity implements ContextListene
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.i(TAG, "onRequestPermissionResult");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (mRequestingLocationUpdates) {
-                    Log.i(TAG, "Permission granted, updates requested, starting location updates");
+                    Log.i(TAG, "Permission granted, updates requested, starting xcontext updates");
                     mLocationSensor.startUpdates();
                 }
             } else {

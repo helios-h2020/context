@@ -4,15 +4,15 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import eu.h2020.helios_social.core.sensor.Sensor;
-import eu.h2020.helios_social.core.sensor.SensorValueListener;
-
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Base Sensor local unit tests
+ *
+ * @see Sensor
+ * @see SensorValueListener
  */
 public class BaseSensorUnitTest extends Sensor {
 

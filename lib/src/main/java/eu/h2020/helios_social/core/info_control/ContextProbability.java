@@ -47,6 +47,11 @@ public class ContextProbability {
             for (ContextProbability probability : probabilities) {
                 probability.setProbability(probability.getProbability()/sum);
             }
+        } else if (probabilities.size() > 0) {
+            double prob = 1.0/probabilities.size();
+            for (ContextProbability probability : probabilities) {
+                probability.setProbability(prob);
+            }
         }
     }
 

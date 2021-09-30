@@ -6,13 +6,13 @@ package eu.h2020.helios_social.core.info_control;
  */
 public class MessageInfo {
 
-    private String id; // id, can be used by the application
-    private String from; // sender
-    private long timestamp; // message received
-    private int importance; // importance of the message (if included into the received message)
-    private String contextId; // context associated with the message (if any)
-    private String messageTopic; // if available
-    private String messageText;  // if available    // message topic ja content   may be combined?
+    private final String id; // id, can be used by the application
+    private final String from; // sender
+    private final long timestamp; // message received
+    private final int importance; // importance of the message (if included into the received message)
+    private final String contextId; // context associated with the message (if any)
+    private final String messageTopic; // if available
+    private final String messageText;  // if available    // message topic ja content   may be combined?
 
     /**
      * Creates a MessageInfo

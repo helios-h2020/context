@@ -133,7 +133,7 @@ public class MyContextsActivity extends AppCompatActivity implements ContextList
             }
         }
 
-        // Return the size of your dataset (invoked by the layout manager)
+        // Return the size of the dataset
         @Override
         public int getItemCount() {
             return dataset.size();

@@ -4,16 +4,15 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import eu.h2020.helios_social.core.context.Context;
-import eu.h2020.helios_social.core.context.ContextListener;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Base context local unit tests
+ *
+ * @see Context
  */
 public class BaseContextUnitTest {
 

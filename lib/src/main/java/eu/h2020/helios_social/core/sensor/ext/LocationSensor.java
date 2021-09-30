@@ -52,23 +52,33 @@ public class LocationSensor extends Sensor {
 
     /**
      * Creates a LocationSensor
-     * @param appContext the application environment (e.g. an Activity or a Service)
+     * @param appEnv the application environment (e.g. an Activity or a Service)
      */
-    public LocationSensor(ContextWrapper appContext) {
-        this(null, appContext, UPDATE_INTERVAL_IN_MILLISECONDS, FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationRequest.PRIORITY_HIGH_ACCURACY);
+    public LocationSensor(ContextWrapper appEnv) {
+        this(null, appEnv, UPDATE_INTERVAL_IN_MILLISECONDS, FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    /**
+     * Creates a LocationSensor
+     * @param id the identifier of this
+     * @param appEnv the application environment (e.g. an Activity or a Service)
+     */
+    public LocationSensor(String id, ContextWrapper appEnv) {
+        this(id, appEnv, UPDATE_INTERVAL_IN_MILLISECONDS, FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS, LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     /**
      * Creates LocationSensor
-     * @param appContext the application environment (e.g. an Activity or a Service)
+     * @param id the identifier of this
+     * @param appEnv the application environment (e.g. an Activity or a Service)
      * @param updateInterval the update interval of the location
      * @param fastestUpdateInterval the fastest update interval
      * @param priority the location reguest priority value
      */
-    public LocationSensor(String id, ContextWrapper appContext, int updateInterval, int fastestUpdateInterval, int priority) {
+    public LocationSensor(String id, ContextWrapper appEnv, int updateInterval, int fastestUpdateInterval, int priority) {
         super(id);
-        this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(appContext);
-        this.mSettingsClient = LocationServices.getSettingsClient(appContext);
+        this.mFusedLocationClient = LocationServices.getFusedLocationProviderClient(appEnv);
+        this.mSettingsClient = LocationServices.getSettingsClient(appEnv);
         this.mCurrentLocation = null;
         this.mRequestingLocationUpdates = false;
         this.mUpdateInterval = updateInterval;
@@ -154,6 +164,14 @@ public class LocationSensor extends Sensor {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
+    }
+
+    /**
+     * Returns the last known location
+     * @return the Location
+     */
+    public Location getLocation() {
+        return mCurrentLocation;
     }
 
     /**

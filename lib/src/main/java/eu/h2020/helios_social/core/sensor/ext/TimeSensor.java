@@ -15,6 +15,7 @@ import eu.h2020.helios_social.core.sensor.Sensor;
 public class TimeSensor extends Sensor {
     int timeInterval;
     ScheduledExecutorService scheduler;
+    boolean running;
 
     /**
      * Creates a new TimeSensor
@@ -24,6 +25,7 @@ public class TimeSensor extends Sensor {
         super(id);
         this.timeInterval = timeInterval;
         this.scheduler = null;
+        this.running = false;
     }
 
     /**
@@ -36,13 +38,16 @@ public class TimeSensor extends Sensor {
 
     @Override
     public void startUpdates() {
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleWithFixedDelay
-                (new Runnable() {
-                    public void run() {
-                        receiveValue(System.currentTimeMillis());
-                    }
-                }, 0, timeInterval, TimeUnit.MILLISECONDS);
+        if(!running || scheduler == null) {
+            running = true;
+            scheduler = Executors.newSingleThreadScheduledExecutor();
+            scheduler.scheduleWithFixedDelay
+                    (new Runnable() {
+                        public void run() {
+                            receiveValue(System.currentTimeMillis());
+                        }
+                    }, 0, timeInterval, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
@@ -50,6 +55,7 @@ public class TimeSensor extends Sensor {
         if(scheduler != null) {
             // stops the scheduler thread
             scheduler.shutdownNow();
+            running = false;
         }
     }
 }

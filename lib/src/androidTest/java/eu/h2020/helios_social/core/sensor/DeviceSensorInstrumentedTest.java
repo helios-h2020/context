@@ -10,14 +10,13 @@ import org.junit.runner.RunWith;
 
 import eu.h2020.helios_social.core.sensor.ext.DeviceSensor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Instrumented test, which will execute on an Android device.
+ * DeviceSensor instrumented test, which will execute on an Android device.
  *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * @see DeviceSensor
  */
 @RunWith(AndroidJUnit4.class)
 public class DeviceSensorInstrumentedTest {
@@ -31,7 +30,7 @@ public class DeviceSensorInstrumentedTest {
 
         assertFalse(sensor.isRegistered());
         sensor.startUpdates();
-        // normally after startUpdates() , the sensor.isregistered() should return true if the device supports the accelerometer)
+        // normally after startUpdates(), the sensor.isregistered() should return true if the device supports the accelerometer
         if(sensor.hasSensor()) {
             assertTrue(sensor.isRegistered());
         }

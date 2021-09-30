@@ -18,7 +18,11 @@ import java.util.Iterator;
 import eu.h2020.helios_social.core.context.Context;
 import eu.h2020.helios_social.core.context.ContextListener;
 
-
+/**
+ *  A dialog class implementation for the "My contexts" example.
+ *
+ *  @see eu.h2020.helios_social.core.info_control.MyContexts
+**/
 public class MyContextsDialog extends Dialog implements ContextListener {
 
     private RecyclerView mMyContextsView;
@@ -93,7 +97,7 @@ public class MyContextsDialog extends Dialog implements ContextListener {
             dataset = myDataset;
         }
 
-        // Create new views (invoked by the layout manager)
+        // Create new views invoked by the layout manager
         public myContextAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
             View listItem = layoutInflater.inflate(R.layout.mycontexts_item, parent, false);
@@ -101,11 +105,9 @@ public class MyContextsDialog extends Dialog implements ContextListener {
             return viewHolder;
         }
 
-        // Replace the contents of a view (invoked by the layout manager)
+        // Replace the contents of a view
         @Override
         public void onBindViewHolder(myContextAdapter.MyViewHolder holder, int position) {
-            // - get element from your dataset at this position
-            // - replace the contents of the view with that element
             Context c = (Context)dataset.get(position);
             holder.contextNameView.setText(c.getName());
             if(c.isActive()) {
@@ -113,7 +115,7 @@ public class MyContextsDialog extends Dialog implements ContextListener {
             }
         }
 
-        // Return the size of your dataset (invoked by the layout manager)
+        // Return the size of the dataset
         @Override
         public int getItemCount() {
             return dataset.size();

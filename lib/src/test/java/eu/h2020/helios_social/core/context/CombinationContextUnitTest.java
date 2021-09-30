@@ -1,13 +1,16 @@
 package eu.h2020.helios_social.core.context;
 
 import org.junit.Test;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import eu.h2020.helios_social.core.context.*;
-
 /**
  * Combination (Boolean) context local unit tests
+ *
+ * @see ContextAnd
+ * @see ContextOr
+ * @see ContextNot
  */
 public class CombinationContextUnitTest {
     Context contextA = new Context("A", true);

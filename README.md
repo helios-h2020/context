@@ -21,12 +21,15 @@ Context Manager is one of the HELIOS Core modules as highlighted in the picture 
 See javadocs in [javadocs.zip](https://raw.githubusercontent.com/helios-h2020/h.core-Context/master/doc/javadocs.zip).
 
 ### Introduction
-Applications should include this library by adding it in the specific build.gradle file. An example:
+Applications should include this library by adding it in the specific `build.gradle` file. An example:
 ```
 dependencies {
-    implementation 'eu.h2020.helios_social.core.context:context:1.0.13'
+    implementation 'eu.h2020.helios_social.core.context:context:1.0.14'
 }
 ```
+To use the dependency in `build.gradle` of the "father" project, you should specify the last version available in Nexus, related to the last Jenkins's deploy.
+
+
 ### Base classes and interfaces 
 
 The Context API provides methods for accessing and managing context information. The following outlines the main classes and 
@@ -105,7 +108,7 @@ the importance of the received message in the user's context (see the method `ge
 
 ### Examples of API usage
 
-See the source folder: "app/src/main/java/eu/h2020/helios_social/core/context_example1/"
+See the source folder: ["app/src/main/java/eu/h2020/helios_social/core/context_example1/"](https://github.com/helios-h2020/h.core-Context/tree/master/app/src/main/java/eu/h2020/helios_social/core/context_example1/)
 
 #### *LocationContext* example
 "ContextExample1.java" (Android app)
@@ -121,7 +124,7 @@ the created contexts to CEN (contextual ego network), and how to use profile inf
 A wifi-based context created (see "WifiContextExample1.java")
 
 #### *BluetoothLESensor* example
-A bluetooth LE sensor example ("BluetoothLESensorExample1.java")
+A bluetooth LE sensor example ("BluetoothLESensorExample1.java"])
 
 #### *DeviceSensor* example
 An example how to use the class DeviceSensor, which provides methods to use Android devices build-in 

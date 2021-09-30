@@ -23,9 +23,9 @@ import eu.h2020.helios_social.core.sensor.Sensor;
 import eu.h2020.helios_social.core.sensor.ext.ActivitySensor;
 
 /**
- * Instrumented test, which will execute on an Android device.
+ * MyContexts instrumented test, which will execute on an Android device.
  *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * @see MyContexts
  */
 @RunWith(AndroidJUnit4.class)
 public class MyContextsInstrumentedTest {
@@ -41,6 +41,11 @@ public class MyContextsInstrumentedTest {
         MyContexts myContexts = new MyContexts(null, MyContextsDatabase.getDatabase(appContext));
 
         List<Context> contexts = myContexts.getContexts();
+        for(Context context : contexts) {
+            if (context != null) {
+                System.out.println("Context=" + context.getName() + "," + context.getId());
+            }
+        }
         if(contexts.size() > 0) {
             System.out.println("contexts size1="+contexts.size());
             ActivityContext activity1 = (ActivityContext)myContexts.getContextById("activity_context1");
@@ -61,6 +66,8 @@ public class MyContextsInstrumentedTest {
         myContexts.add(context2);
         Context context3 = new Context("context3", false);
         myContexts.add(context3);
+        context3.setName("context3_updated");
+
         Context context4 = new ContextOr("context4", context3, context1);
         myContexts.add(context4);
         Context context5 = new ContextAnd("context5", context4, context1);
@@ -70,6 +77,7 @@ public class MyContextsInstrumentedTest {
         myContexts.add(context6);
 
         myContexts.remove(context2);
+        myContexts.update(context3);
 
         contexts = myContexts.getContexts();
         System.out.println("contexts size=" + contexts.size());

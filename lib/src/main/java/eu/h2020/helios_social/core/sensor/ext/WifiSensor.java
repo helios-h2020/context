@@ -19,9 +19,9 @@ import eu.h2020.helios_social.core.sensor.Sensor;
  */
 public class WifiSensor extends Sensor {
 
-    private WifiManager mWifiManager;
-    private WifiSensorReceiver mWifiReceiver;
-    private ContextWrapper appEnv;
+    private final WifiManager mWifiManager;
+    private final WifiSensorReceiver mWifiReceiver;
+    private final ContextWrapper appEnv;
     private String ssid;
     private boolean registered;
 

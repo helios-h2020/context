@@ -24,7 +24,7 @@ public class InfoControl implements InformationOverloadControl {
 
     // default weights. Their values are in range [0.0,1.0], and the sum of weights should be 1
     private double context_weight = 0.6;
-    private double trust_weight = 0.2;
+    private double trust_weight = 0.1;
     private double reactiontime_weight = 0.15;
     private double importance_weight = 0.1;
     private double number_weight = 0.05;
@@ -80,12 +80,14 @@ public class InfoControl implements InformationOverloadControl {
             for (Context context : contexts) {
                 contextProbabilities.add(new ContextProbability(context, 1.0));
             }
+            return fillProbabilities(contextProbabilities);
         } else {
             // apply machine learning to detect context
             contextProbabilities = classifier.classify(from, topic, content);
+            fillProbabilities(contextProbabilities);
             ContextProbability.normalize(contextProbabilities);
         }
-        return fillProbabilities(contextProbabilities);
+        return contextProbabilities;
     }
 
     /**
@@ -152,8 +154,22 @@ public class InfoControl implements InformationOverloadControl {
         return messageImportances;
     }
 
-    // TODO
-    public void sendMessage(MessageInfo message) {
+    /**
+     * Notifies InformationOverloadControl about a sent message.
+     * The sent message information is then stored into the MessageContextDatabase.
+     * @param to
+     * @param topic
+     * @param message
+     */
+    public void sendMessage(String to, String topic, String message) {
+        // System.out.println("InfoControl: to:" + to + ",topic=" + topic + ",message=" + message);
+        List<Context> activeContexts = myContexts.getActiveContexts();
+        long timestamp = System.currentTimeMillis();
+        for(Context context: activeContexts) {
+            MessageContext messageContext = new MessageContext(context.getId(), to, timestamp, -1,
+                    MessageImportance.IMPORTANCE_UNKNOWN, -1.0f, topic, message);
+            addMessageContext(messageContext);
+        }
     }
 
     @Override
@@ -168,6 +184,14 @@ public class InfoControl implements InformationOverloadControl {
         }
     }
 
+    /**
+     * Set weights for importance calculation
+     * @param context_weight
+     * @param trust_weight
+     * @param reactiontime_weight
+     * @param importance_weight
+     * @param number_weight
+     */
     public void setWeights(double context_weight, double trust_weight, double reactiontime_weight,
                            double importance_weight, double number_weight) {
         this.context_weight = context_weight;
@@ -185,8 +209,10 @@ public class InfoControl implements InformationOverloadControl {
      */
     private int getMessageImportance(@NonNull MessageInfo messageInfo, @NonNull ContextProbability contextProbability) {
 
+        // the effects of context probability to importance
         Context context = contextProbability.getContext();
         double contextVal = contextProbability.getProbability();
+        contextVal = Math.min(contextVal*myContexts.size()/2.0, 1.0);
 
         String contextId = context.getId();
         String from = messageInfo.getFrom();
@@ -223,6 +249,8 @@ public class InfoControl implements InformationOverloadControl {
             }
         }
         importanceVal = (importanceVal-1.0)/4.0;   // the result is between [0,1]
+
+        // the effects of trust to message importance
         /*
         // previous trust
         double trustMedianContextFrom = repository.getMedianTrust(contextId, from);
@@ -230,7 +258,6 @@ public class InfoControl implements InformationOverloadControl {
         double trustMedianFrom = repository.getMedianTrust(null, from);
         double trustTimeMedian = repository.getMedianTrust(null, null);
         */
-        // the effects of trust to message importance
         double trustFrom = getTrust(from, context);
         double trustVal = trustFrom >= 0.0 ? trustFrom : 0.5;     // trustVal is between [0,1]
 
@@ -272,6 +299,22 @@ public class InfoControl implements InformationOverloadControl {
             }
         }
         return trustValue;
+    }
+
+    /**
+     * Returns the related contextual scope of the InfoControl
+     * @return MyContexts
+     */
+    public MyContexts getMyContexts() {
+        return myContexts;
+    }
+
+    /**
+     * Returns currently active contexts in the scope of the InfoControl
+     * @return the list of ctive contexts
+     */
+    public List<Context> getActiveContexts() {
+        return myContexts.getActiveContexts();
     }
 
     private static double sigmoid(double x) {

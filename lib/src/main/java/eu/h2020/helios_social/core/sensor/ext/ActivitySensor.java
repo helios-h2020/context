@@ -28,17 +28,18 @@ public class ActivitySensor extends Sensor {
     private final ActivityRecognitionClient mActivityRecognitionClient;
     private PendingIntent mPendingIntent;
     private Intent mIntent;
-    private long mInterval;
+    private final long mInterval;
     private ActivityReceiver mActivityReceiver;
     private boolean mRequestingActivityUpdates;
 
-    private Context appEnv;
+    private final Context appEnv;
     // Action fired when activity updates are triggered.
     private static final String RECEIVER_ACTION = "HELIOS_ACTIVITY_SENSOR_RECEIVER_ACTION";
     private static final String TAG = "HeliosActivitySensor";
 
     /**
      * Creates a ActivitySensor
+     * @param id the identifier of this
      * @param appEnv the application env
      * @param interval the detection interval
      */
@@ -49,6 +50,15 @@ public class ActivitySensor extends Sensor {
         this.mInterval = interval;
         mRequestingActivityUpdates = false;
         createActivityRecognizer();
+    }
+
+    /**
+     * Creates a ActivitySensor
+     * @param id the identifier of this
+     * @param appEnv the application env
+     */
+    public ActivitySensor(String id, Context appEnv) {
+        this(id, appEnv, 0);
     }
 
     /**
