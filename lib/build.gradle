@@ -35,7 +35,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.20'
+    implementation 'eu.h2020.helios_social.core.contextualegonetwork:contextualegonetwork:1.0.24'
     implementation 'eu.h2020.helios_social.core.trustmanager:trustmanager:1.0.19'
 
     // Room components

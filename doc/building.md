@@ -4,8 +4,9 @@ This application  utilizes the HELIOS context module. It implements two example 
 
 ## Cloning repositories ##
 
-The core context module is included into the repository context.git.  See the documention on the testclient repository on how to clone HELIOS repositories.
-
+The core context module is included into the repository `h.core-Context.git`.  
+You can clone it into current directory using the following command: 
+`git clone https://github.com/helios-h2020/h.core-Context.git`
 
 ## Building the application using Android Studio ##
 
