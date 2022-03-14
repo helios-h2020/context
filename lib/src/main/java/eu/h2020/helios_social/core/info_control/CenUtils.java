@@ -20,7 +20,10 @@ public class CenUtils {
      * @return
      */
     public static eu.h2020.helios_social.core.contextualegonetwork.Context addContext(ContextualEgoNetwork cen, String contextId) {
-        return cen.getOrCreateContext(contextId);
+        if(cen != null) {
+            return cen.getOrCreateContext(contextId);
+        }
+        return null;
     }
 
     /**
@@ -28,20 +31,22 @@ public class CenUtils {
      * @param cen
      * param myContexts
      * @param alter
-     * @return
+     * @return the list of contexts
      */
     public static List<Context> getContexts(ContextualEgoNetwork cen, MyContexts myContexts, String alter) {
-        ArrayList<Context> contexts = new ArrayList<Context>();
-        List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
-        for(eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
-            List<Node> nodes = cenContext.getNodes();
-            for(Node node : nodes) {
-                if(node.getId().equals(alter)) {
-                    Object contextId = cenContext.getData();
-                    if(contextId != null && contextId instanceof String) {
-                        Context context = myContexts.getContextById((String)contextId);
-                        if(context != null) {
-                            contexts.add((Context) context);
+        ArrayList<Context> contexts = new ArrayList<>();
+        if(cen != null) {
+            List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
+            for (eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
+                List<Node> nodes = cenContext.getNodes();
+                for (Node node : nodes) {
+                    if (node.getId().equals(alter)) {
+                        Object contextId = cenContext.getData();
+                        if (contextId != null && contextId instanceof String) {
+                            Context context = myContexts.getContextById((String) contextId);
+                            if (context != null) {
+                                contexts.add((Context) context);
+                            }
                         }
                     }
                 }
@@ -54,13 +59,15 @@ public class CenUtils {
      * Checks if a context is associated with cen
      * @param cen
      * @param contextId
-     * @return
+     * @return boolean
      */
     public static boolean hasContext(ContextualEgoNetwork cen, String contextId) {
-        List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
-        for(eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
-            if (contextId.equals(cenContext.getData())) {
-                return true;
+        if(cen != null) {
+            List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
+            for (eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
+                if (contextId.equals(cenContext.getData())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -70,13 +77,48 @@ public class CenUtils {
      * Gets contextual layer of cen on the basis of the related context of the layer
      */
     public static eu.h2020.helios_social.core.contextualegonetwork.Context getCenContext(ContextualEgoNetwork cen, String contextId) {
-        List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
-        for(eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
-            if (contextId.equals(cenContext.getData())) {
-                return cenContext;
+        if(cen != null) {
+            List<eu.h2020.helios_social.core.contextualegonetwork.Context> cenContexts = cen.getContexts();
+            for (eu.h2020.helios_social.core.contextualegonetwork.Context cenContext : cenContexts) {
+                if (contextId.equals(cenContext.getData())) {
+                    return cenContext;
+                }
             }
         }
         return null;
     }
 
+    /**
+     * Adds alter to cen context
+     * @param alterId
+     * @param contextId
+     */
+    public static void addAlter(ContextualEgoNetwork cen, String alterId, String contextId) {
+        if(cen != null) {
+            eu.h2020.helios_social.core.contextualegonetwork.Context cenContext = CenUtils.getCenContext(cen, contextId);
+            if(cenContext != null) {
+                eu.h2020.helios_social.core.contextualegonetwork.Node alterNode = cen.getOrCreateNode(alterId);
+                if(alterNode != null) {
+                    cenContext.getOrAddEdge(cen.getEgo(), alterNode);
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes alter from cen context
+     * @param alterId
+     * @param contextId
+     */
+    public static void removeAlter(ContextualEgoNetwork cen, String alterId, String contextId) {
+        if(cen != null) {
+            eu.h2020.helios_social.core.contextualegonetwork.Context cenContext = CenUtils.getCenContext(cen, contextId);
+            if(cenContext != null) {
+                eu.h2020.helios_social.core.contextualegonetwork.Node alterNode = cen.getOrCreateNode(alterId);
+                if(alterNode != null) {
+                    cenContext.removeEdge(cen.getEgo(), alterNode);
+                }
+            }
+        }
+    }
 }

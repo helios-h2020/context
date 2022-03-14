@@ -1,5 +1,7 @@
 package eu.h2020.helios_social.core.info_control;
 
+import java.util.List;
+
 /**
  * MessageInfo
  * - incoming message data
@@ -9,8 +11,8 @@ public class MessageInfo {
     private final String id; // id, can be used by the application
     private final String from; // sender
     private final long timestamp; // message received
-    private final int importance; // importance of the message (if included into the received message)
-    private final String contextId; // context associated with the message (if any)
+    private final int importance; // importance of the message (if included into the received message, otherwise 0)
+    private final List<String> contextIds; // list of contexts associated with the message (if any)
     private final String messageTopic; // if available
     private final String messageText;  // if available    // message topic ja content   may be combined?
 
@@ -20,16 +22,16 @@ public class MessageInfo {
      * @param from the sender
      * @param timestamp the timestamp when the message received
      * @param importance
-     * @param contextId
+     * @param contextIds
      * @param messageTopic
      * @param messageText
      */
-    public MessageInfo(String id, String from, long timestamp, int importance, String contextId, String messageTopic, String messageText) {
+    public MessageInfo(String id, String from, long timestamp, int importance, List<String> contextIds, String messageTopic, String messageText) {
         this.id = id;
         this.from = from;
         this.timestamp = timestamp;
         this.importance = importance;
-        this.contextId = contextId;
+        this.contextIds = contextIds;
         this.messageTopic = messageTopic;
         this.messageText = messageText;
     }
@@ -60,8 +62,12 @@ public class MessageInfo {
         return importance;
     }
 
-    public String getContextId() {
-        return contextId;
+    /**
+     * Returns lists of contexts (ids)
+     * @return the context list
+     */
+    public List<String> getContextIds() {
+        return contextIds;
     }
 
     public String getMessageTopic() {

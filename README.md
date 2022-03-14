@@ -24,7 +24,7 @@ See javadocs in [javadocs.zip](https://raw.githubusercontent.com/helios-h2020/h.
 Applications should include this library by adding it in the specific `build.gradle` file. An example:
 ```
 dependencies {
-    implementation 'eu.h2020.helios_social.core.context:context:1.0.15'
+    implementation 'eu.h2020.helios_social.core.context:context:1.0.19'
 }
 ```
 To use the dependency in `build.gradle` of the "father" project, you should specify the last version available in Nexus, related to the last Jenkins's deploy.

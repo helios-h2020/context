@@ -65,6 +65,7 @@ public class WifiSensor extends Sensor {
         if(registered) {
             appEnv.unregisterReceiver(mWifiReceiver);
             ssid = null;
+            registered = false;
             Log.d(TAG, "stopUpdates");
         }
     }

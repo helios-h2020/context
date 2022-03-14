@@ -135,6 +135,9 @@ public class MyContexts {
         }
     }
 
+    /**
+     * Removes all contexts from MyContexts and from contextual ego network
+     */
     public void removeAll() {
         if (cen != null) {
             for(String contextId : myContexts.keySet()) {
@@ -148,6 +151,11 @@ public class MyContexts {
         MyContextsDatabase.databaseWriteExecutor.execute(myContextsDao::removeAll);
     }
 
+    /**
+     * Sets context active
+     * @param context the context
+     * @param active the value (boolean)
+     */
     public void setActive(@NonNull Context context, boolean active) {
         if(context.isActive() != active) {
             context.setActive(active);

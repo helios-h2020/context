@@ -293,14 +293,15 @@ public class MyContextsExample extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.i(TAG, "onRequestPermissionResult");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
                 Log.i(TAG, "User interaction was cancelled.");
                 return;
             }
-            for(int i=0; i<grantResults.length; i++) {
-                if(grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(TAG, "Permission" + permissions[i] + " granted");
                 } else { // Permission denied.
                     Log.i(TAG, "Permission" + permissions[i] + " denied");

@@ -65,29 +65,43 @@ public class InfoControl implements InformationOverloadControl {
         String from = messageInfo.getFrom();
         String topic = messageInfo.getMessageTopic();
         String content = messageInfo.getMessageText();
-        String contextId = messageInfo.getContextId();
+        List<String> contextIds = messageInfo.getContextIds();
 
-        if (contextId != null) {
-            Context sharedContext = myContexts.getContextById(contextId);
-            if (sharedContext != null) { // message is associated with a shared context
-                contextProbabilities.add(new ContextProbability(sharedContext, 1.0));
-                return fillProbabilities(contextProbabilities);
+        // case 1. the message is already associated with one or more contexts
+        if (contextIds != null && contextIds.size() > 0) {
+            for (String contextId : contextIds) {
+                Context messageContext = myContexts.getContextById(contextId);
+                if (messageContext != null) { // message is already associated with a context => probability = 1.0
+                    addContextProbability(contextProbabilities, messageContext, 1.0);
+                }
             }
         }
+        // case 2. alter contexts from cen
         List<Context> contexts = cen != null ? CenUtils.getContexts(cen, myContexts, from) : null;
         if (contexts != null && contexts.size() > 0) {
             // context candidates are from cen
             for (Context context : contexts) {
-                contextProbabilities.add(new ContextProbability(context, 1.0));
+                addContextProbability(contextProbabilities, context, 1.0);
             }
-            return fillProbabilities(contextProbabilities);
-        } else {
-            // apply machine learning to detect context
-            contextProbabilities = classifier.classify(from, topic, content);
-            fillProbabilities(contextProbabilities);
-            ContextProbability.normalize(contextProbabilities);
         }
-        return contextProbabilities;
+        // case3. apply machine learning to detect context
+        double MAX_ML_PROB = 0.8; // maximum ml detected context probability
+        List<ContextProbability> probabilities = classifier.classify(from, topic, content);
+        ContextProbability.normalize(probabilities);
+        for (ContextProbability contextProbability : probabilities) {
+            addContextProbability(contextProbabilities, contextProbability.getContext(), Math.min(MAX_ML_PROB, contextProbability.getProbability()));
+        }
+
+        return fillProbabilities(contextProbabilities);
+    }
+
+    private void addContextProbability(List<ContextProbability> contextProbabilities, Context context, double probability) {
+        for (ContextProbability contextProbability : contextProbabilities) {
+            if(context == contextProbability.getContext()) {
+                return;
+            }
+        }
+        contextProbabilities.add(new ContextProbability(context, probability));
     }
 
     /**
@@ -97,16 +111,7 @@ public class InfoControl implements InformationOverloadControl {
      */
     private List<ContextProbability> fillProbabilities(List<ContextProbability> contextProbabilities) {
         for(Context context: myContexts.getContexts()) {
-            boolean found = false;
-            for(ContextProbability probability : contextProbabilities) {
-                if(context == probability.getContext()) {
-                    found = true;
-                    break;
-                }
-            }
-            if(!found) {
-                contextProbabilities.add(new ContextProbability(context, 0.0));
-            }
+            addContextProbability(contextProbabilities, context, 0.0);
         }
         return contextProbabilities;
     }
@@ -144,7 +149,7 @@ public class InfoControl implements InformationOverloadControl {
 
     @Override
     public List<MessageImportance> getMessageImportance(MessageInfo messageInfo) {
-        List<MessageImportance> messageImportances = new ArrayList<MessageImportance>();
+        List<MessageImportance> messageImportances = new ArrayList<>();
         // Get context probabilities
         List<ContextProbability> contextProbabilities = getContextProbabilities(messageInfo);
         for (ContextProbability contextProbability : contextProbabilities) {
